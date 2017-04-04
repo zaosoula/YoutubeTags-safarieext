@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>YoutubeTags</title>
+    <script type="text/javascript">
+        var youtubeTagsURL = 'https://zaosoula.fr/YoutubeTags/?url=';
+
+        function performCommand(event) {
+            if (event.command === "youtubeTag") {
+                var path = /(?:https?:\/\/)?(?:www[.])?(?:youtube[.]com\/watch[?]v=|youtu[.]be\/)([^&]{11})/i
+                var url = safari.application.browserWindows[0].activeTab.url;
+                if (event.userInfo.ifLink && path.test(event.userInfo.linkHref)) {
+                    var redirectUrl = youtubeTagsURL + encodeURIComponent(event.userInfo.linkHref);
+                } else if (path.test(url)) {
+                    var redirectUrl = youtubeTagsURL + encodeURIComponent(url);
+                }
+                var newTab = safari.application.activeBrowserWindow.openTab().url = redirectUrl;
+            }
+        }
+
+        function validateCommand(event) {
+            var path = /(?:https?:\/\/)?(?:www[.])?(?:youtube[.]com\/watch[?]v=|youtu[.]be\/)([^&]{11})/i
+            var url = safari.application.browserWindows[0].activeTab.url;
+            if (!path.test(url) && !path.test(event.userInfo.linkHref)) {
+                event.target.disabled = true;
+            }
+        }
+
+        safari.application.addEventListener("command", performCommand, false);
+        safari.application.addEventListener("validate", validateCommand, false);
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
